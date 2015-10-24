@@ -1,0 +1,1 @@
+This is the course project for Coursera's [Regression Models class](https://www.coursera.org/course/regmods) offered by the Johns Hopkins University.
