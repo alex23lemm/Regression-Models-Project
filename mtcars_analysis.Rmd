@@ -1,5 +1,5 @@
 ---
-title: "(Non)-Impact of Transmissoin Type on MPG for 1973-74 Car Models"
+title: "(Non)-Impact of Transmission Type on MPG for 1973-74 Car Models"
 author: "Alexander Lemm"
 date: "October 25, 2015"
 output:
@@ -22,9 +22,7 @@ library(knitr)
 
 ## Executive summary
 
-This report examines the relationship between a set of variables and miles per gallon (MPG). Looking only at the transmission type, our findings suggest that cars with an automatic transmisson have a higher fuel consumption as cars with a manual transmission. However, this effect can no longer be observed when including other variables in our final and superior model. Based on our findings MPG can be best expressed as linear combination of *Weight*, $Weight^{2}$ and *Quarter mile time*.
-
-
+This report examines the relationship between a set of variables and miles per gallon (MPG). Looking only at the transmission type, our findings suggest that cars with an automatic transmission have a higher fuel consumption as cars with a manual transmission. However, this effect can no longer be observed when including other variables in our final and superior model. Based on our findings MPG can be best expressed as linear combination of *Weight*, $Weight^{2}$ and *Quarter mile time*. The entire report including the respective code can be found on [GitHub](https://github.com/alex23lemm/Regression-Models-Project).
 
 ## Examing the effect of Transmission on MPG
 
@@ -37,13 +35,13 @@ kable(tt)
 
 ```
 
-Because the p-value `r round(tt$p.value, digits = 4)` < 0.05, we reject the null hypothesis. The data provides convincing evidence that MPG indeed differs between transmission types. We are 95% confident that cars from the 1973/74 population with an automatic transmission drive between `r round(tt$conf.low, digits = 2)` amd `r round(tt$conf.high, digits = 2)` less MPG than cars with a manual transmission.
+Because the p-value `r round(tt$p.value, digits = 4)` < 0.05, we reject the null hypothesis. The data provides convincing evidence that MPG indeed differs between transmission types. We are 95% confident that cars from the 1973/74 population with an automatic transmission drive between `r round(tt$conf.low, digits = 2)` and `r round(tt$conf.high, digits = 2)` less MPG than cars with a manual transmission.
 
 ## Examing the effect of muliple variables on MPG
 
 In this section we will check if the difference in fuel consumption by transmission type holds, if we take into account additional variables and their effect on *MPG*. 
 
-In a first step we will perfrom a linear regression of *MPG* on all other variables in the *mtcars* dataset leveraging the *step()* function: This ensures that we will perform a variable selection leaving only the most important variables in the model.
+In a first step we will perform a linear regression of *MPG* on all other variables in the *mtcars* data set leveraging the *step()* function: This ensures that we will perform a variable selection leaving only the most important variables in the model. This model to which we refer as Model 1 includes 3 significant variables:
 
 ```{r echo=FALSE, message=FALSE}
 
@@ -60,17 +58,19 @@ fit_quad <- update(fit_step, mpg ~ wt + I(wt^2) + qsec + am)
 ```
 
 
-```{r echo = FALSE, fig.height=5, fig.cap="Plots of residuals versus fitted values for the $mtcars$ data set. Left: A linear regression of mpg on $weight$, $quarter$ $mile$ $time$ and $transmission$ $type$. A pattern in the residuals indicates non-linearity in the data. Right: A linear regression of $mpg$ on the same variables plus $weight^{2}$. The former pattern nearly vanished."}
+
+
+
+When performing model diagnostics we observe a non-linear pattern in the residual plot for Model 1 (Left side of Figure 2). This is a problem because all of the conclusions that we draw from the fit are suspect. Our findings suggest that it is best to add $Weight^{2}$ to Model 1 to accommodate this non-linear relationship. We call this new model Model 2. When adding $Weight^{2}$ only little pattern can be observed in the residuals (Right side of Figure 2).  
+
+```{r echo = FALSE, fig.height=4, fig.cap="Plots of residuals versus fitted values for the $mtcars$ data set. Left: A linear regression of mpg on $weight$, $quarter$ $mile$ $time$ and $transmission$ $type$. A pattern in the residuals indicates non-linearity in the data. Right: A linear regression of $mpg$ on the same variables plus $weight^{2}$. The former pattern nearly vanished."}
 par(mfrow = c(1, 2))
 plot(fit_step, which = 1, caption = "Model 1: Residual Plot of Linear Fit")
 plot(fit_quad, which = 1, caption = "Model 2: Resdiual Plot of Quadratic Fit")
 
 ```
 
-
-When performing model diagnostics we observe a non-linear pattern in the residual plot for Model 1 (Left side of Figure 2). This is a problem because all of the conclusions that we draw from the fit are suspect. Our findings suggest that it is best to add $Weight^{2}$ to Model 1 to accomondate this non-linear relationship. We call this new model Model 2. When adding $Weight^{2}$ only little pattern can be observed in the residuals (Right side of Figure 2).  
-
-Performing a hypothesis test comparing the two models with the `anova()` function revelas the following: 
+Performing a hypothesis test comparing the two models with the `anova()` function reveals the following: 
 
 ```{r echo=FALSE}
 
@@ -94,9 +94,10 @@ rse_quad <- round(summary(fit_quad)$sigma, digits = 4)
 ```
 
 
-Model 2 is superior to Model 1 in terms of $R^{2}$ (`r adj_r_quad` vs. `r adj_r_step`) and $RSE$ (`r rse_quad` vs. `r rse_step`). However, examing the individual p-values from the predictors of Model 2 reveals that *Transmission Type (AM)* is no longer significant:
+Model 2 is superior to Model 1 in terms of $R^{2}$ (`r adj_r_quad` vs. `r adj_r_step`) and $RSE$ (`r rse_quad` vs. `r rse_step`). However, examining the individual p-values from the predictors of Model 2 reveals that *Transmission Type (AM)* is no longer significant:
 
 ```{r echo=FALSE}
+
 kable(tidy(fit_quad))
 ```
 
@@ -111,9 +112,9 @@ kable(tidy(fit_quad_reduced))
 ```
 
 Now, all included variables are highly significant again. Comparing all three models we can clearly see the superiority of Model 3 in terms 
-of *Adjusted* $R^{2}$ and *RSE*
+of *Adjusted* $R^{2}$ and *RSE*:
 
-```{r}
+```{r echo=FALSE}
 
 bind_rows(glance(fit_step),
           glance(fit_quad),
@@ -124,8 +125,9 @@ bind_rows(glance(fit_step),
   bind_cols(data_frame(Model = c("Model 1", "Model 2", "Model 3")), .) %>%
   kable
 
+CI <- confint(fit_quad_reduced)
+
 
 ```
 
-Based on those findings we would choose Model 3
-
+Model 3 would be our final choice when modeling the relationship of specific car variables and and fuel consumption. The 95% confidence intervals are as follows: (`r round(CI[2, 1], digits = 3)`, `r round(CI[2, 2], digits = 3)`) for *Weight*, (`r round(CI[3, 1], digits = 3)`, `r round(CI[3, 2], digits =3)`)  for $Weight^{}2$, and (`r round(CI[4, 1], digits = 3)`, `r round(CI[4, 2], digits =3)`) for *Quarter mile time*.
