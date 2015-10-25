@@ -22,7 +22,7 @@ library(knitr)
 
 ## Executive summary
 
-This report examines the relationship between a set of variables and miles per gallon (MPG). Looking only at the transmission type, our findings suggest that cars with an automatic transmission have a higher fuel consumption as cars with a manual transmission. However, this effect can no longer be observed when including other variables in our final and superior model. Based on our findings MPG can be best expressed as linear combination of *Weight*, $Weight^{2}$ and *Quarter mile time*. The entire report including the respective code can be found on [GitHub](https://github.com/alex23lemm/Regression-Models-Project).
+This report examines the relationship between a set of variables and miles per gallon (MPG). Looking only at the transmission type, our findings suggest that cars with an automatic transmission have a higher fuel consumption than cars with a manual transmission. However, this effect can no longer be observed when including other variables in our final and superior model. Based on our findings MPG can be best expressed as linear combination of *Weight*, $Weight^{2}$ and *Quarter mile time*. The entire report including the respective code can be found on [GitHub](https://github.com/alex23lemm/Regression-Models-Project).
 
 ## Examing the effect of Transmission on MPG
 
@@ -37,7 +37,7 @@ kable(tt)
 
 Because the p-value `r round(tt$p.value, digits = 4)` < 0.05, we reject the null hypothesis. The data provides convincing evidence that MPG indeed differs between transmission types. We are 95% confident that cars from the 1973/74 population with an automatic transmission drive between `r round(tt$conf.low, digits = 2)` and `r round(tt$conf.high, digits = 2)` less MPG than cars with a manual transmission.
 
-## Examing the effect of muliple variables on MPG
+## Examing the effect of multiple variables on MPG
 
 In this section we will check if the difference in fuel consumption by transmission type holds, if we take into account additional variables and their effect on *MPG*. 
 
@@ -63,7 +63,7 @@ fit_quad <- update(fit_step, mpg ~ wt + I(wt^2) + qsec + am)
 
 When performing model diagnostics we observe a non-linear pattern in the residual plot for Model 1 (Left side of Figure 2). This is a problem because all of the conclusions that we draw from the fit are suspect. Our findings suggest that it is best to add $Weight^{2}$ to Model 1 to accommodate this non-linear relationship. We call this new model Model 2. When adding $Weight^{2}$ only little pattern can be observed in the residuals (Right side of Figure 2).  
 
-```{r echo = FALSE, fig.height=4, fig.cap="Plots of residuals versus fitted values for the $mtcars$ data set. Left: A linear regression of mpg on $weight$, $quarter$ $mile$ $time$ and $transmission$ $type$. A pattern in the residuals indicates non-linearity in the data. Right: A linear regression of $mpg$ on the same variables plus $weight^{2}$. The former pattern nearly vanished."}
+```{r echo = FALSE, fig.height=3.5, fig.cap="Plots of residuals versus fitted values for the $mtcars$ data set. Left: A linear regression of *MPG* on *Weight*, *Quarter mile time* and *Transmission Type*. A pattern in the residuals indicates non-linearity in the data. Right: A linear regression of *MPG* on the same variables plus $Weight^{2}$. The former pattern nearly vanished."}
 par(mfrow = c(1, 2))
 plot(fit_step, which = 1, caption = "Model 1: Residual Plot of Linear Fit")
 plot(fit_quad, which = 1, caption = "Model 2: Resdiual Plot of Quadratic Fit")
@@ -81,7 +81,7 @@ av_output$p.value <- av_output$`Pr(>F)`
 
 ```
 
-Here the F-statistic is `r round(av_output$F[2], digits = 2)` and the associated p-value is `r round(av_output$p.value[2], digits = 4)`. That provides evidence that the model contains the predictors $Weight$ and $Weight^{2}$ is superior to the model that only contains the predictor $Weight$. 
+Here the F-statistic is `r round(av_output$F[2], digits = 2)` and the associated p-value is `r round(av_output$p.value[2], digits = 4)`. That provides evidence that the model containing the predictors $Weight$ and $Weight^{2}$ is superior to the model that only contains the predictor $Weight$. 
 
 ```{r echo=FALSE}
 
