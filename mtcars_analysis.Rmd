@@ -1,0 +1,48 @@
+---
+title: "Impact of transmissoin type on MPG for 1973-74 car models"
+author: "Alexander Lemm"
+date: "October 25, 2015"
+output: pdf_document
+---
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+library(dplyr)
+library(ggplot2)
+library(magrittr)
+library(broom)
+library(knitr)
+
+```
+
+
+
+## Executive summary
+
+ToDo
+
+## Exploratory Data Anaylsis
+
+
+
+We assume that the data was randomly sampled from the *1974 Motor Trend* magazine. Moreover, we deal with non-paired data so that the independence condition is also satisfied between groups. Since both samples have n < 30 observations and are not strongly skewed we can apply a two sample t-test ($H_{0}:\mu_{automatic} = \mu_{manual}.$ $H_{A}:\mu_{automatic} \neq \mu_{manual}$)
+
+```{r echo=FALSE, results='asis'}
+
+tt <- t.test(mpg ~ am, data = mtcars) %>% tidy
+kable(tt)
+
+```
+
+Because the p-value `r round(tt$p.value, digits = 4)` < 0.05, we reject the null hypothesis. The data provides convincing evidence that MPG indeed differs between transmission types. We are 95% confident that cars from the 1973/74 population with an automatic transmission drive between `r round(tt$conf.low, digits = 2)` amd `r round(tt$conf.high, digits = 2)` less MPG than cars with a manual transmission.
+
+
+
+
+
+
+
+
+
+
+
