@@ -65,8 +65,9 @@ When performing model diagnostics we observe a non-linear pattern in the residua
 
 ```{r echo = FALSE, fig.height=3.5, fig.cap="Plots of residuals versus fitted values for the $mtcars$ data set. Left: A linear regression of *MPG* on *Weight*, *Quarter mile time* and *Transmission Type*. A pattern in the residuals indicates non-linearity in the data. Right: A linear regression of *MPG* on the same variables plus $Weight^{2}$. The former pattern nearly vanished."}
 par(mfrow = c(1, 2))
-plot(fit_step, which = 1, caption = "Model 1: Residual Plot of Linear Fit")
-plot(fit_quad, which = 1, caption = "Model 2: Resdiual Plot of Quadratic Fit")
+plot(fit_step, which = 1, caption = "Model 1: Residual Plot of Linear Fit", cex.caption = 0.8, cex.id = 0.5, cex.axis = 0.6, cex.lab = 0.7)
+plot(fit_quad, which = 1, caption = "Model 2: Resdiual Plot of Quadratic Fit",
+     cex.caption = 0.8, cex.id = 0.5, cex.axis = 0.6, cex.lab = 0.7)
 
 ```
 
@@ -111,7 +112,9 @@ kable(tidy(fit_quad_reduced))
 
 ```
 
-Now, all included variables are highly significant again. Comparing all three models we can clearly see the superiority of Model 3 in terms 
+Now, all included variables are highly significant again. Like Model 2, Model 3 does not show any pattern in the residual plot (not shown here). 
+
+Comparing all three models we can clearly see the superiority of Model 3 in terms 
 of *Adjusted* $R^{2}$ and *RSE*:
 
 ```{r echo=FALSE}
@@ -130,4 +133,4 @@ CI <- confint(fit_quad_reduced)
 
 ```
 
-Model 3 would be our final choice when modeling the relationship of specific car variables and and fuel consumption. The 95% confidence intervals are as follows: (`r round(CI[2, 1], digits = 3)`, `r round(CI[2, 2], digits = 3)`) for *Weight*, (`r round(CI[3, 1], digits = 3)`, `r round(CI[3, 2], digits =3)`)  for $Weight^{}2$, and (`r round(CI[4, 1], digits = 3)`, `r round(CI[4, 2], digits =3)`) for *Quarter mile time*.
+Model 3 would be our final choice when modeling the relationship of specific car variables and and fuel consumption. The 95% confidence intervals are as follows: (`r round(CI[2, 1], digits = 3)`, `r round(CI[2, 2], digits = 3)`) for *Weight*, (`r round(CI[3, 1], digits = 3)`, `r round(CI[3, 2], digits =3)`)  for $Weight^{2}$, and (`r round(CI[4, 1], digits = 3)`, `r round(CI[4, 2], digits =3)`) for *Quarter mile time*.
