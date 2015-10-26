@@ -54,16 +54,14 @@ kable(tidy(fit_step))
 
 fit_quad <- update(fit_step, mpg ~ wt + I(wt^2) + qsec + am)
 
-
 ```
 
 
+When performing model diagnostics we observe a non-linear pattern in the residual plot for Model 1 (Left side of Figure 2). This is a problem because all of the conclusions that we draw from the fit are suspect. Our findings suggest that it is best to add $Weight^{2}$ to Model 1 to accommodate this non-linear relationship. We call this new model **Model 2**. When adding $Weight^{2}$ only a slight pattern can be observed in the residuals (Right side of Figure 1).  
 
-When performing model diagnostics we observe a non-linear pattern in the residual plot for Model 1 (Left side of Figure 2). This is a problem because all of the conclusions that we draw from the fit are suspect. Our findings suggest that it is best to add $Weight^{2}$ to Model 1 to accommodate this non-linear relationship. We call this new model **Model 2**. When adding $Weight^{2}$ only a slight pattern can be observed in the residuals (Right side of Figure 2).  
+```{r echo = FALSE, fig.height=3, fig.cap="Plots of residuals versus fitted values for the $mtcars$ data set. **Left**: A linear regression of *MPG* on *Weight*, *Quarter mile time* and *Transmission Type*. A pattern in the residuals indicates non-linearity in the data. **Right**: A linear regression of *MPG* on the same variables plus $Weight^{2}$. The former pattern nearly vanished."}
 
-```{r echo = FALSE, fig.height=3.5, fig.cap="Plots of residuals versus fitted values for the $mtcars$ data set. **Left**: A linear regression of *MPG* on *Weight*, *Quarter mile time* and *Transmission Type*. A pattern in the residuals indicates non-linearity in the data. **Right**: A linear regression of *MPG* on the same variables plus $Weight^{2}$. The former pattern nearly vanished."}
-
-par(mfrow = c(1, 2))
+par(mfrow = c(1, 2), mar = c(4, 3.6, 1.5, 1.5) + 0.1, mgp = c(1.5, 0.5, 0))
 plot(fit_step, which = 1, caption = "Model 1: Residual Plot of Linear Fit", cex.caption = 0.8, cex.id = 0.5, cex.axis = 0.6, cex.lab = 0.7)
 plot(fit_quad, which = 1, caption = "Model 2: Resdiual Plot of Quadratic Fit",
      cex.caption = 0.8, cex.id = 0.5, cex.axis = 0.6, cex.lab = 0.7)
@@ -99,6 +97,7 @@ Model 2 is superior to Model 1 in terms of $R^{2}$ (`r adj_r_quad` vs. `r adj_r_
 ```{r echo=FALSE}
 
 kable(tidy(fit_quad))
+
 ```
 
 This suggests that we might drop *Transmission Type (AM)* from the quadratic model. Dropping this predictor results in **Model 3** with the respective summary information below:
@@ -107,7 +106,6 @@ This suggests that we might drop *Transmission Type (AM)* from the quadratic mod
 
 fit_quad_reduced <- update(fit_quad, mpg ~ wt + I(wt^2) + qsec)
 kable(tidy(fit_quad_reduced))
-
 
 ```
 
@@ -127,9 +125,8 @@ bind_rows(glance(fit_step),
   bind_cols(data_frame(Model = c("Model 1", "Model 2", "Model 3")), .) %>%
   kable
 
-CI <- confint(fit_quad_reduced)
-
+CI <- confint(fit_quad_reduced) %>% round(digits = 3)
 
 ```
 
-Model 3 would be our final choice when modeling the relationship of specific car variables and and fuel consumption. The 95% confidence intervals are as follows: (`r round(CI[2, 1], digits = 3)`, `r round(CI[2, 2], digits = 3)`) for *Weight*, (`r round(CI[3, 1], digits = 3)`, `r round(CI[3, 2], digits =3)`)  for $Weight^{2}$, and (`r round(CI[4, 1], digits = 3)`, `r round(CI[4, 2], digits =3)`) for *Quarter mile time*.
+Model 3 would be our final choice when modeling the relationship of specific car variables and and fuel consumption. The 95% confidence intervals are as follows: (`r CI[2, 1]`, `r CI[2, 2]`) for *Weight*, (`r CI[3, 1]`, `r CI[3, 2]`)  for $Weight^{2}$, and (`r CI[4, 1]`, `r CI[4, 2]`) for *Quarter mile time*.
